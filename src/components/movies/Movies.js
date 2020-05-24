@@ -1,80 +1,77 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import * as moviesActions from "../../redux/actions/moviesActions";
+import {
+  loadMovies,
+  saveMovie,
+  deleteMovie,
+} from "../../redux/actions/moviesActions";
 import { loadSubscriptions } from "../../redux/actions/subscriptionsActions";
 import propTypes from "prop-types";
 import MovieNav from "./MovieNav";
-import MovieCard from "./MovieCard";
-import { Container, Row } from "react-bootstrap";
+import MovieTable from "./MovieTable";
+import { toast } from "react-toastify";
 
-const Movies = ({ movies, subscriptions, loadMovies, loadSubscriptions }) => {
-  const [isMovie, setIsMovie] = useState(true);
+const Movies = ({
+  movies,
+  subscriptions,
+  loadMovies,
+  loadSubscriptions,
+  deleteMovie,
+}) => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
     loadMovies();
     loadSubscriptions();
-  }, []);
-
-  const moviePage = (page) => {
-    setIsMovie(page === "movie");
-  };
+  }, [movies]);
 
   const handleSearch = (event) => {
     setFilter(event.target.value);
   };
 
+  const handleDelete = (movie) => {
+    toast.success("Movie Deleted");
+    setFilter("");
+    deleteMovie(movie);
+  };
+
   return (
-    <div>
+    <>
       <h2>Movies</h2>
-      <MovieNav
-        onChange={handleSearch}
-        moviePage={moviePage}
-        movies={isMovie}
+      <MovieNav onChange={handleSearch} movies={true} />
+
+      <MovieTable
+        movies={movies}
+        subscriptions={subscriptions}
+        filter={filter}
+        onDelete={handleDelete}
       />
-      <Container>
-        <Row className="justify-content-md-center">
-          {movies
-            .filter((movie) => {
-              if (filter.length > 0) {
-                return movie.Name.toLowerCase().match(filter);
-              } else {
-                return true;
-              }
-            })
-            .map((movie, index) => (
-              <MovieCard
-                key={index}
-                movie={movie}
-                subscriptions={subscriptions.filter((sub) => {
-                  return sub.Movies.find((m) => {
-                    return m._id === movie._id;
-                  });
-                })}
-              />
-            ))}
-        </Row>
-      </Container>
-    </div>
+    </>
   );
 };
 
 Movies.propTypes = {
+  movie: propTypes.object.isRequired,
   movies: propTypes.array.isRequired,
   subscriptions: propTypes.array.isRequired,
   loadMovies: propTypes.func.isRequired,
+  saveMovie: propTypes.func.isRequired,
+  deleteMovie: propTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
+    movie: {},
     movies: state.movies,
     subscriptions: state.subscriptions,
   };
 }
 
 const mapDispatchToProps = {
-  loadMovies: moviesActions.loadMovies,
+  loadMovies,
   loadSubscriptions,
+  saveMovie,
+  deleteMovie,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Movies);

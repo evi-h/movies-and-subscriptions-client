@@ -1,15 +1,29 @@
 import React from "react";
 import { Button } from "react-bootstrap";
 import TextField from "@material-ui/core/TextField";
+import { useHistory } from "react-router-dom";
 
-const MovieNav = ({ movies, moviePage, onChange }) => {
+const MovieNav = ({ movies, onChange }) => {
+  const history = useHistory();
+
+  const handleRedirect = (route) => {
+    history.push(route);
+  };
   return (
     <>
-      <Button onClick={() => moviePage("movie")} variant="primary" size="lg">
+      <Button
+        onClick={() => handleRedirect("/movies")}
+        variant="primary"
+        size="lg"
+      >
         Movies
       </Button>{" "}
-      <Button onClick={() => moviePage("addMovie")} variant="primary" size="lg">
-        AddMovie
+      <Button
+        onClick={() => handleRedirect("/movie")}
+        variant="primary"
+        size="lg"
+      >
+        Add Movie
       </Button>{" "}
       {movies && (
         <>

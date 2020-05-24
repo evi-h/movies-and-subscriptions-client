@@ -2,12 +2,19 @@ import React from "react";
 import { Card, Button } from "react-bootstrap";
 import { ListItemIcon, List, ListItem, ListItemText } from "@material-ui/core";
 import { Person } from "@material-ui/icons";
+import { useHistory } from "react-router-dom";
 
-const MovieCard = ({ movie, subscriptions }) => {
+const MovieCard = ({ movie, subscriptions, onDelete }) => {
   const findDate = (subscriber) => {
     let { date } = subscriber.Movies.filter((m) => m._id === movie._id)[0];
     let dateFormat = new Date(date);
     return `${dateFormat.getDate()}/${dateFormat.getMonth()}/${dateFormat.getFullYear()}`;
+  };
+
+  const history = useHistory();
+
+  const handleRedirect = (id) => {
+    history.push(`/movie/${id}`);
   };
   return (
     <>
@@ -15,8 +22,10 @@ const MovieCard = ({ movie, subscriptions }) => {
         <Card.Img variant="top" style={{ height: "25rem" }} src={movie.Image} />
         <Card.Body>
           <Card.Title>{movie.Name}</Card.Title>
-          <Card.Text>Genres: {movie.Genres.toString()}</Card.Text>
-          {subscriptions.length > 0 && (
+          {movie.Genres && (
+            <Card.Text>Genres: {movie.Genres.toString()}</Card.Text>
+          )}
+          {(subscriptions ? subscriptions.length > 0 : false) && (
             <>
               <Card.Title>Subscriptions Watched:</Card.Title>
               <List
@@ -37,8 +46,12 @@ const MovieCard = ({ movie, subscriptions }) => {
               </List>
             </>
           )}
-          <Button variant="primary">Edit</Button>{" "}
-          <Button variant="primary">Delete</Button>
+          <Button onClick={() => handleRedirect(movie._id)} variant="primary">
+            Edit
+          </Button>{" "}
+          <Button variant="primary" onClick={() => onDelete(movie)}>
+            Delete
+          </Button>
         </Card.Body>
       </Card>
     </>

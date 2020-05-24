@@ -1,24 +1,24 @@
 import { handleResponse, handleError } from "./apiUtils";
-const baseUrl = "http://localhost:3100/movies";
+const baseUrl = "http://localhost:3100/users";
 
-export function getAllMovies() {
+export function getAllUsers() {
   return fetch(baseUrl).then(handleResponse).catch(handleError);
 }
 
-export function saveMovie(movie) {
+export function saveUser(user) {
   let url = baseUrl;
-  url = url + (movie._id ? "/update" : "/addNewMovie");
+  url = url + (user._id ? "/update" : "/addNewUser");
 
   return fetch(url, {
-    method: movie._id ? "PUT" : "POST",
+    method: user._id ? "PUT" : "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify(movie),
+    body: JSON.stringify(user),
   })
     .then(handleResponse)
     .catch(handleError);
 }
 
-export function deleteMovie(id) {
+export function deleteUser(id) {
   let url = baseUrl + "/delete/" + id;
   return fetch(url, { method: "DELETE" })
     .then(handleResponse)
