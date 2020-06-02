@@ -18,6 +18,18 @@ export function saveUser(user) {
     .catch(handleError);
 }
 
+export function login(user) {
+  let url = baseUrl + "/login";
+
+  return fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(user),
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
 export function deleteUser(id) {
   let url = baseUrl + "/delete/" + id;
   return fetch(url, { method: "DELETE" })

@@ -6,8 +6,16 @@ import propTypes from "prop-types";
 import UsersNav from "./UsersNav";
 import AddUser from "./AddUser";
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 
-const Users = ({ users, loadUsers, saveUser, history, ...props }) => {
+const Users = ({
+  users,
+  loadUsers,
+  saveUser,
+  history,
+  authentication,
+  ...props
+}) => {
   const [user, setUser] = useState({ ...props.user });
   useEffect(() => {
     if (users.length === 0) loadUsers();
@@ -31,6 +39,7 @@ const Users = ({ users, loadUsers, saveUser, history, ...props }) => {
 
   return (
     <>
+      {authentication === null && <Redirect to="/login" />}
       <h2>Users</h2>
       <UsersNav />
       <AddUser handleSave={handleSave} onChange={onChange} user={user} />
@@ -72,6 +81,7 @@ function mapStateToProps(state, ownProps) {
     user,
     users: state.users,
     subscriptions: state.subscriptions,
+    authentication: state.authentication,
   };
 }
 

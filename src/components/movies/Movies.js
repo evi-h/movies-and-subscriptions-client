@@ -10,6 +10,7 @@ import propTypes from "prop-types";
 import MovieNav from "./MovieNav";
 import MovieTable from "./MovieTable";
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 
 const Movies = ({
   movies,
@@ -17,12 +18,14 @@ const Movies = ({
   loadMovies,
   loadSubscriptions,
   deleteMovie,
+  authentication,
 }) => {
   const [filter, setFilter] = useState("");
 
   useEffect(() => {
-    loadMovies();
-    loadSubscriptions();
+    if (movies.length === 0) loadMovies();
+
+    if (movies.length === 0) loadSubscriptions();
   }, [movies]);
 
   const handleSearch = (event) => {
@@ -37,6 +40,7 @@ const Movies = ({
 
   return (
     <>
+      {authentication === null && <Redirect to="/login" />}
       <h2>Movies</h2>
       <MovieNav onChange={handleSearch} movies={true} />
 
@@ -57,6 +61,7 @@ Movies.propTypes = {
   loadMovies: propTypes.func.isRequired,
   saveMovie: propTypes.func.isRequired,
   deleteMovie: propTypes.func.isRequired,
+  authentication: propTypes.object,
 };
 
 function mapStateToProps(state) {
@@ -64,6 +69,7 @@ function mapStateToProps(state) {
     movie: {},
     movies: state.movies,
     subscriptions: state.subscriptions,
+    authentication: state.authentication,
   };
 }
 

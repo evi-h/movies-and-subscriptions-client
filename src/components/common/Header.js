@@ -1,24 +1,66 @@
 import React from "react";
+import { connect } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { Navbar, Nav, Button } from "react-bootstrap";
+import { logout } from "../../redux/actions/authenticationActions";
 
-const Header = () => {
+const Header = ({ logout, authenticaiton }) => {
   const activeStyle = { color: "#f15b2a" };
 
+  const logoutUser = () => {
+    logout();
+  };
+
   return (
-    <nav>
-      <NavLink to="/" activeStyle={activeStyle} exact>
-        Movies
-      </NavLink>
-      {" | "}
-      <NavLink to="/subscriptions" activeStyle={activeStyle} exact>
-        Subscription
-      </NavLink>
-      {" | "}
-      <NavLink to="/users" activeStyle={activeStyle} exact>
-        Users
-      </NavLink>
-    </nav>
+    <Navbar bg="primary" variant="dark">
+      <Navbar.Brand style={{ color: "black" }} href="/">
+        Movies And Subscriptions CMS
+      </Navbar.Brand>
+      <Nav className="mr-auto" style={{ color: "white" }}>
+        <NavLink
+          to="/"
+          style={{ color: "white" }}
+          activeStyle={activeStyle}
+          exact
+        >
+          Movies
+        </NavLink>
+        {" | "}
+        <NavLink
+          to="/subscriptions"
+          style={{ color: "white" }}
+          activeStyle={activeStyle}
+          exact
+        >
+          Subscription
+        </NavLink>
+        {" | "}
+        <NavLink
+          to="/users"
+          style={{ color: "white" }}
+          activeStyle={activeStyle}
+          exact
+        >
+          Users
+        </NavLink>
+      </Nav>
+      {authenticaiton && (
+        <Button onClick={() => logoutUser()} variant="outline-light">
+          Logout
+        </Button>
+      )}
+    </Navbar>
   );
 };
 
-export default Header;
+function mapStateToProps(state) {
+  return {
+    authenticaiton: state.authentication,
+  };
+}
+
+const mapDispatchToProps = {
+  logout,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

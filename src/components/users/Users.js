@@ -6,8 +6,9 @@ import { loadUsers, deleteUser } from "../../redux/actions/usersActions";
 import propTypes from "prop-types";
 import UsersTable from "./UsersTable";
 import { toast } from "react-toastify";
+import { Redirect } from "react-router-dom";
 
-const Users = ({ users, loadUsers, deleteUser }) => {
+const Users = ({ users, loadUsers, deleteUser, authentication }) => {
   useEffect(() => {
     loadUsers();
   }, []);
@@ -19,7 +20,9 @@ const Users = ({ users, loadUsers, deleteUser }) => {
 
   return (
     <>
-      {console.log(users)} <h2>Users</h2>
+      {authentication === null && <Redirect to="/login" />}
+
+      <h2>Users</h2>
       <UsersNav />
       <UsersTable users={users} onDelete={handleDelete} />
     </>
@@ -34,6 +37,7 @@ function mapStateToProps(state) {
   return {
     user: {},
     users: state.users,
+    authentication: state.authentication,
   };
 }
 
