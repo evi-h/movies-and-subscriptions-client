@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Container, Row, Col, Button } from "react-bootstrap";
 import {
@@ -17,7 +17,6 @@ import { toast } from "react-toastify";
 
 const Login = ({ authenticate, savePassword, history }) => {
   const [user, setUser] = useState({ Username: "", Password: "" });
-  const [password, setPassword] = useState({ password: "" });
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -27,11 +26,7 @@ const Login = ({ authenticate, savePassword, history }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  const handleChange = (event) => {
-    const { id, value } = event.target;
-    console.log(id, value);
-    setPassword(() => ({ [id]: value }));
-  };
+
   const createPassword = () => {
     savePassword(user).then((result) => {
       console.log(result);

@@ -24,7 +24,7 @@ const Movies = ({
   ...props
 }) => {
   const [movie, setMovie] = useState({ ...props.movie });
-  const [createPermission, setCreatePermission] = useState(
+  const [createPermission] = useState(
     hasPermission(authentication, "Create Movies")
   );
   useEffect(() => {

@@ -24,7 +24,7 @@ const Members = ({
 }) => {
   const [member, setMember] = useState({ ...props.member });
 
-  const [createPermission, setCreatePermission] = useState(
+  const [createPermission] = useState(
     hasPermission(authentication, "Create Subscriptions")
   );
 

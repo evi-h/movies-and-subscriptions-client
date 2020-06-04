@@ -7,7 +7,6 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   TextField,
-  InputLabel,
   Select,
   MenuItem,
 } from "@material-ui/core";
@@ -35,16 +34,6 @@ const SubscriptionCard = ({ id, subscribe, movies, ...props }) => {
       ...prevSub,
       [name]: value,
     }));
-  };
-
-  const onChangeMovies = (event) => {
-    const { name, value } = event.target;
-    setSubscription((prevSub) => ({
-      ...prevSub,
-      [name]: [...prevSub[name], value],
-    }));
-
-    console.log(subscription);
   };
 
   return (

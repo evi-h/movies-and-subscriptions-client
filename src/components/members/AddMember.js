@@ -1,14 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import {
-  TextField,
-  InputLabel,
-  Select,
-  Input,
-  MenuItem,
-  Checkbox,
-  ListItemText,
-} from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 
 const AddMember = ({ member, onChange, handleSave }) => {
   return (
