@@ -15,9 +15,29 @@ export function authenticate(user) {
       .login(user)
       .then((userData) => {
         if (userData !== "ERROR") {
+          if (userData === "password") {
+            return "password";
+          }
+          dispatch(loginSuccess(userData));
+          return "ok";
+        } else return "error";
+      })
+      .catch((error) => {
+        return "error";
+      });
+  };
+}
+
+export function savePassword(user) {
+  return function (dispatch, getState) {
+    return usersApi
+      .setPassword(user)
+      .then((userData) => {
+        if (userData !== "ERROR") {
           dispatch(loginSuccess(userData));
           return "ok";
         }
+
         return "error";
       })
       .catch((error) => {
@@ -29,5 +49,13 @@ export function authenticate(user) {
 export function logout() {
   return function (dispatch) {
     return dispatch(logoutSuccess({ user: "adsfa" }));
+  };
+}
+
+export function hasPermission(user, action) {
+  return function (dispatch) {
+    return (
+      user && (user.username === "admin" || user.permissions.includes(action))
+    );
   };
 }

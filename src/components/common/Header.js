@@ -7,6 +7,8 @@ import { logout } from "../../redux/actions/authenticationActions";
 const Header = ({ logout, authenticaiton }) => {
   const activeStyle = { color: "#f15b2a" };
 
+  const username = authenticaiton ? authenticaiton.username : null;
+
   const logoutUser = () => {
     logout();
   };
@@ -34,15 +36,20 @@ const Header = ({ logout, authenticaiton }) => {
         >
           Subscription
         </NavLink>
-        {" | "}
-        <NavLink
-          to="/users"
-          style={{ color: "white" }}
-          activeStyle={activeStyle}
-          exact
-        >
-          Users
-        </NavLink>
+
+        {username === "admin" && (
+          <>
+            {" | "}
+            <NavLink
+              to="/users"
+              style={{ color: "white" }}
+              activeStyle={activeStyle}
+              exact
+            >
+              Users
+            </NavLink>
+          </>
+        )}
       </Nav>
       {authenticaiton && (
         <Button onClick={() => logoutUser()} variant="outline-light">

@@ -5,6 +5,8 @@ import {
   saveSubscription,
   deleteSubscription,
 } from "../../redux/actions/subscriptionsActions";
+import { hasPermission } from "../../redux/actions/authenticationActions";
+
 import { loadMovies } from "../../redux/actions/moviesActions";
 import propTypes from "prop-types";
 import SubscriptionNav from "./SubscriptionNav";
@@ -20,13 +22,25 @@ const Subscriptions = ({
   saveSubscription,
   deleteSubscription,
   authentication,
+  hasPermission,
 }) => {
   useEffect(() => {
     loadSubscriptions();
   }, []);
 
+  const [subscriptionPermission] = useState(
+    hasPermission(authentication, "View Subscriptions")
+  );
+
+  const [deletePermission] = useState(
+    hasPermission(authentication, "Delete Subscriptions")
+  );
+  const [updatePermission] = useState(
+    hasPermission(authentication, "Update Subscriptions")
+  );
+
   useEffect(() => {
-    if (subscriptions.length === 0) {
+    if (subscriptions.length === 0 && subscriptionPermission) {
       loadSubscriptions();
     }
     if (movies.length === 0) loadMovies();
@@ -51,12 +65,18 @@ const Subscriptions = ({
       <h2>Subscriptions</h2>
       <SubscriptionNav subscriptions={true} />
 
-      <SubscriptionTable
-        subscriptions={subscriptions}
-        handleSave={handleSave}
-        movies={movies}
-        onDelete={handleDelete}
-      />
+      {subscriptionPermission ? (
+        <SubscriptionTable
+          subscriptions={subscriptions}
+          deletePermission={deletePermission}
+          update={updatePermission}
+          handleSave={handleSave}
+          movies={movies}
+          onDelete={handleDelete}
+        />
+      ) : (
+        <h1>Unauthorized To View Subscriptions</h1>
+      )}
     </>
   );
 };
@@ -68,6 +88,7 @@ Subscriptions.propTypes = {
   loadMovies: propTypes.func.isRequired,
   saveSubscription: propTypes.func.isRequired,
   deleteSubscription: propTypes.func.isRequired,
+  hasPermission: propTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -83,6 +104,7 @@ const mapDispatchToProps = {
   loadMovies,
   saveSubscription,
   deleteSubscription,
+  hasPermission,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Subscriptions);

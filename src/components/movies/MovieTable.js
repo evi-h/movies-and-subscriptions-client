@@ -3,7 +3,14 @@ import React from "react";
 import MovieCard from "./MovieCard";
 import { Container, Row } from "react-bootstrap";
 
-const MovieTable = ({ movies, subscriptions, filter, onDelete }) => {
+const MovieTable = ({
+  movies,
+  subscriptions,
+  filter,
+  onDelete,
+  update,
+  deletePermission,
+}) => {
   return (
     <Container>
       <Row className="justify-content-md-center">
@@ -20,6 +27,8 @@ const MovieTable = ({ movies, subscriptions, filter, onDelete }) => {
               key={index}
               movie={movie}
               onDelete={onDelete}
+              update={update}
+              deletePermission={deletePermission}
               subscriptions={subscriptions.filter((sub) => {
                 return sub.Movies.find((m) => {
                   return m._id === movie._id;

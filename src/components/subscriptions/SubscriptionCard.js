@@ -6,7 +6,14 @@ import { Movie } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 import AddMovie from "./SubscriptionAddMovie";
 
-const SubscriptionCard = ({ subscription, handleSave, movies, onDelete }) => {
+const SubscriptionCard = ({
+  subscription,
+  handleSave,
+  movies,
+  onDelete,
+  update,
+  deletePermission,
+}) => {
   const history = useHistory();
 
   const handleRedirect = (id) => {
@@ -51,15 +58,22 @@ const SubscriptionCard = ({ subscription, handleSave, movies, onDelete }) => {
               </List>
             </>
           )}
-          <Button
-            onClick={() => handleRedirect(subscription._id)}
-            variant="primary"
-          >
-            Edit
-          </Button>{" "}
-          <Button variant="primary" onClick={() => onDelete(subscription)}>
-            Delete
-          </Button>
+          {update && (
+            <>
+              <Button
+                onClick={() => handleRedirect(subscription._id)}
+                variant="primary"
+              >
+                Edit
+              </Button>{" "}
+            </>
+          )}
+
+          {deletePermission && (
+            <Button variant="primary" onClick={() => onDelete(subscription)}>
+              Delete
+            </Button>
+          )}
         </Card.Body>
       </Card>
     </>

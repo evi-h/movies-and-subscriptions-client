@@ -5,6 +5,7 @@ import {
   saveMovie,
   deleteMovie,
 } from "../../redux/actions/moviesActions";
+import { hasPermission } from "../../redux/actions/authenticationActions";
 import { loadSubscriptions } from "../../redux/actions/subscriptionsActions";
 import propTypes from "prop-types";
 import MovieNav from "./MovieNav";
@@ -19,11 +20,21 @@ const Movies = ({
   loadSubscriptions,
   deleteMovie,
   authentication,
+  hasPermission,
 }) => {
   const [filter, setFilter] = useState("");
+  const [moviesPermission] = useState(
+    hasPermission(authentication, "View Movies")
+  );
+  const [deletePermission] = useState(
+    hasPermission(authentication, "Delete Movies")
+  );
+  const [updatePermission] = useState(
+    hasPermission(authentication, "Update Movies")
+  );
 
   useEffect(() => {
-    if (movies.length === 0) loadMovies();
+    if (movies.length === 0 && moviesPermission) loadMovies();
 
     if (movies.length === 0) loadSubscriptions();
   }, [movies]);
@@ -42,14 +53,20 @@ const Movies = ({
     <>
       {authentication === null && <Redirect to="/login" />}
       <h2>Movies</h2>
-      <MovieNav onChange={handleSearch} movies={true} />
+      <MovieNav onChange={handleSearch} movies={moviesPermission} />
 
-      <MovieTable
-        movies={movies}
-        subscriptions={subscriptions}
-        filter={filter}
-        onDelete={handleDelete}
-      />
+      {moviesPermission ? (
+        <MovieTable
+          movies={movies}
+          deletePermission={deletePermission}
+          update={updatePermission}
+          subscriptions={subscriptions}
+          filter={filter}
+          onDelete={handleDelete}
+        />
+      ) : (
+        <h1>Unauthorized To View Movies</h1>
+      )}
     </>
   );
 };
@@ -62,6 +79,7 @@ Movies.propTypes = {
   saveMovie: propTypes.func.isRequired,
   deleteMovie: propTypes.func.isRequired,
   authentication: propTypes.object,
+  hasPermission: propTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -78,6 +96,7 @@ const mapDispatchToProps = {
   loadSubscriptions,
   saveMovie,
   deleteMovie,
+  hasPermission,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Movies);

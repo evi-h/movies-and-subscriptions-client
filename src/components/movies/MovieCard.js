@@ -4,7 +4,13 @@ import { ListItemIcon, List, ListItem, ListItemText } from "@material-ui/core";
 import { Person } from "@material-ui/icons";
 import { useHistory } from "react-router-dom";
 
-const MovieCard = ({ movie, subscriptions, onDelete }) => {
+const MovieCard = ({
+  movie,
+  subscriptions,
+  onDelete,
+  update,
+  deletePermission,
+}) => {
   const findDate = (subscriber) => {
     let { date } = subscriber.Movies.filter((m) => m._id === movie._id)[0];
     let dateFormat = new Date(date);
@@ -46,12 +52,21 @@ const MovieCard = ({ movie, subscriptions, onDelete }) => {
               </List>
             </>
           )}
-          <Button onClick={() => handleRedirect(movie._id)} variant="primary">
-            Edit
-          </Button>{" "}
-          <Button variant="primary" onClick={() => onDelete(movie)}>
-            Delete
-          </Button>
+          {update && (
+            <>
+              <Button
+                onClick={() => handleRedirect(movie._id)}
+                variant="primary"
+              >
+                Edit
+              </Button>{" "}
+            </>
+          )}
+          {deletePermission && (
+            <Button variant="primary" onClick={() => onDelete(movie)}>
+              Delete
+            </Button>
+          )}
         </Card.Body>
       </Card>
     </>

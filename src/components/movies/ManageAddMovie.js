@@ -5,6 +5,8 @@ import {
   saveMovie,
   deleteMovie,
 } from "../../redux/actions/moviesActions";
+import { hasPermission } from "../../redux/actions/authenticationActions";
+
 import { loadSubscriptions } from "../../redux/actions/subscriptionsActions";
 import propTypes from "prop-types";
 import MovieNav from "./MovieNav";
@@ -18,9 +20,13 @@ const Movies = ({
   saveMovie,
   history,
   authentication,
+  hasPermission,
   ...props
 }) => {
   const [movie, setMovie] = useState({ ...props.movie });
+  const [createPermission, setCreatePermission] = useState(
+    hasPermission(authentication, "Create Movies")
+  );
   useEffect(() => {
     if (movies.length === 0) loadMovies();
   }, []);
@@ -47,7 +53,11 @@ const Movies = ({
 
       <h2>Movies</h2>
       <MovieNav movies={false} />
-      <AddMovie handleSave={handleSave} onChange={onChange} movie={movie} />
+      {createPermission ? (
+        <AddMovie handleSave={handleSave} onChange={onChange} movie={movie} />
+      ) : (
+        <h1>Unauthorized To Create Movies</h1>
+      )}
     </>
   );
 };
@@ -93,6 +103,7 @@ const mapDispatchToProps = {
   loadSubscriptions,
   saveMovie,
   deleteMovie,
+  hasPermission,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Movies);

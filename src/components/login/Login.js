@@ -1,12 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Container, Row, Col, Button } from "react-bootstrap";
-import { TextField } from "@material-ui/core";
-import { authenticate } from "../../redux/actions/authenticationActions";
+import {
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@material-ui/core";
+import {
+  authenticate,
+  savePassword,
+} from "../../redux/actions/authenticationActions";
 import { toast } from "react-toastify";
 
-const Login = ({ authenticate, history }) => {
+const Login = ({ authenticate, savePassword, history }) => {
   const [user, setUser] = useState({ Username: "", Password: "" });
+  const [password, setPassword] = useState({ password: "" });
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleChange = (event) => {
+    const { id, value } = event.target;
+    console.log(id, value);
+    setPassword(() => ({ [id]: value }));
+  };
+  const createPassword = () => {
+    savePassword(user).then((result) => {
+      console.log(result);
+      if (result === "ok") {
+        toast.success("Password Created Successfully");
+        history.push("/movies");
+      } else {
+        toast.error("Saving Password Failed");
+      }
+    });
+  };
+
   const onChange = (event) => {
     const { name, value } = event.target;
     setUser((prevUser) => ({
@@ -20,6 +57,8 @@ const Login = ({ authenticate, history }) => {
       if (result === "ok") {
         toast.success("Login Successful");
         history.push("/movies");
+      } else if (result === "password") {
+        handleClickOpen();
       } else {
         toast.error("Login Failed");
       }
@@ -58,12 +97,45 @@ const Login = ({ authenticate, history }) => {
 
         <Col></Col>
       </Row>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Create Password</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Welcome to the Movies CMS!
+            <br />
+            Please set your new Password
+          </DialogContentText>
+          <TextField
+            autoFocus
+            onChange={onChange}
+            margin="dense"
+            id="password"
+            name="Password"
+            label="Password"
+            type="password"
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={createPassword} color="primary">
+            Create Password
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
 
 const mapDispatchToProps = {
   authenticate,
+  savePassword,
 };
 
 export default connect(null, mapDispatchToProps)(Login);

@@ -18,6 +18,13 @@ const getUserData = () => {
   let user = localStorage.getItem("user");
   if (user) {
     user = JSON.parse(user);
+    let { expiry } = user;
+
+    const now = new Date();
+    if (expiry < now.getTime()) {
+      localStorage.removeItem("user");
+      return null;
+    }
 
     return user.value;
   }

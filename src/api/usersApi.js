@@ -30,6 +30,18 @@ export function login(user) {
     .catch(handleError);
 }
 
+export function setPassword(user) {
+  let url = baseUrl + "/setPassword";
+
+  return fetch(url, {
+    method: "PUT",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(user),
+  })
+    .then(handleResponse)
+    .catch(handleError);
+}
+
 export function deleteUser(id) {
   let url = baseUrl + "/delete/" + id;
   return fetch(url, { method: "DELETE" })

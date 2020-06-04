@@ -5,6 +5,8 @@ import {
   saveMember,
   deleteMember,
 } from "../../redux/actions/membersActions";
+import { hasPermission } from "../../redux/actions/authenticationActions";
+
 import { loadSubscriptions } from "../../redux/actions/subscriptionsActions";
 import propTypes from "prop-types";
 import AddMember from "./AddMember";
@@ -17,9 +19,15 @@ const Members = ({
   saveMember,
   history,
   authentication,
+  hasPermission,
   ...props
 }) => {
   const [member, setMember] = useState({ ...props.member });
+
+  const [createPermission, setCreatePermission] = useState(
+    hasPermission(authentication, "Create Subscriptions")
+  );
+
   useEffect(() => {
     if (members.length === 0) loadMembers();
   }, []);
@@ -44,7 +52,15 @@ const Members = ({
     <>
       {authentication === null && <Redirect to="/login" />}
 
-      <AddMember handleSave={handleSave} onChange={onChange} member={member} />
+      {createPermission ? (
+        <AddMember
+          handleSave={handleSave}
+          onChange={onChange}
+          member={member}
+        />
+      ) : (
+        <h1>Unauthorized To Create Subscriptions</h1>
+      )}
     </>
   );
 };
@@ -54,6 +70,7 @@ Members.propTypes = {
   members: propTypes.array.isRequired,
   loadMembers: propTypes.func.isRequired,
   saveMember: propTypes.func.isRequired,
+  hasPermission: propTypes.func.isRequired,
 };
 
 const getMemberBySlug = (searchMember, slug) => {
@@ -89,6 +106,7 @@ const mapDispatchToProps = {
   loadSubscriptions,
   saveMember,
   deleteMember,
+  hasPermission,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Members);
