@@ -61,6 +61,6 @@ export function addSubscription(movie, id) {
 export function deleteSubscription(subscription) {
   return function (dispatch) {
     dispatch(deleteSubscriptionOptimistic(subscription));
-    return subscriptionsApi.deleteSubscription(subscription.MemberId);
+    return subscriptionsApi.deleteSubscription(subscription._id);
   };
 }
